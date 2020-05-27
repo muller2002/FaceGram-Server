@@ -10,7 +10,7 @@ public class Profil {
 	private List<Profil> friendlist;
 	
 	public Profil(String username, String password, String name, String lastname, String coordinates) {
-		setFriendlist(new List<Profil>());
+		friendlist = new List<Profil>();
 		this.setUsername(username);
 		this.setName(name);
 		this.setLastname(lastname);
@@ -92,9 +92,5 @@ public class Profil {
 
 	public List<Profil> getFriendlist() {
 		return friendlist;
-	}
-
-	public void setFriendlist(List<Profil> friendlist) {
-		this.friendlist = friendlist;
 	}
 }
