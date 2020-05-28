@@ -341,5 +341,14 @@ public class List<ContentType> {
       return null;
     }
   }
+
+public boolean contains(ContentType ct) {
+	toFirst();
+	while(hasAccess()) {
+		if(ct == getContent())return true;
+		next();
+	}
+	return false;
+}
   
 }
