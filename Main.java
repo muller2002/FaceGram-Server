@@ -3,7 +3,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		int port = 50000 + 3;
+		int port = 50000 + 6;
 		FaceGramServerApplication fgsa = new FaceGramServerApplication(port , "");
 		fgsa.register("Test", "Account", "0,0", "T1", "Passwort", "IP:1");
 		fgsa.register("Test", "Account", "1,0", "T2", "Passwort", "IP:2");
@@ -21,6 +21,7 @@ public class Main {
 		fgsa.addFriend("T1",  "IP:2");
 		fgsa.addFriend("T3",  "IP:2");
 		fgsa.addFriend("T4",  "IP:2");
+		
 		
 		
 		fgsa.addFriend("T7",  "IP:1");
@@ -47,6 +48,12 @@ public class Main {
 		fgsa.knows("T11", "IP:1");
 
 		
+		fgsa.message("T2", "test", "IP:1");
+		fgsa.message("T2", "test1", "IP:1");
+		fgsa.message("T3", "testa1", "IP:1");
+		fgsa.message("T1", "test2", "IP:2");
+		fgsa.chat("T2", "IP:1");
+		fgsa.chat("T1", "IP:2");
 	}
 	
 

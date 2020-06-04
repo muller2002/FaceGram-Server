@@ -3,26 +3,25 @@ import java.util.HashMap;
 
 
 public class FaceGramServerApplication {
-	HashMap<String, Profile> profileID = new HashMap<String, Profile>();
-	ProfileModel profiles;
-	Hashing hashing = new Hashing();
-	FaceGramServer fgs;
+	private HashMap<String, Profile> profileID = new HashMap<String, Profile>();
+	private ProfileModel profiles;
+	private ChatModel chats;
+	private Hashing hashing = new Hashing();
+	private FaceGramServer fgs;
 	private int port;
 
 
 	public FaceGramServerApplication(int port, String userdata) {
 		this.port = port;
-		profiles = new ProfileModel(userdata);
+		profiles = new ProfileModel(userdata + "/profiles");
+		chats = new ChatModel(userdata + "/chats");
 		fgs = new FaceGramServer(port, this);
-		System.out.println("test2");
 	}
 	
 
 	public void login(String username, String password, String id) {
-		System.out.println(username + " " + password);
 		if (profiles.exists(username) && profiles.get(username).testPassword(password)) {
 			profileID.put(id, profiles.get(username));
-			System.out.println(username + " " + password);
 			fgs.answerLogin(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), username);
 		} else {
 			fgs.answerLogin(false, id.split(":")[0], Integer.parseInt(id.split(":")[1]), username);
@@ -30,13 +29,10 @@ public class FaceGramServerApplication {
 
 	}
 
-	public void register(String name, String lastname, String coordinates, String username, String password,
-			String id) {
-		System.out.println("Register : " + username);
+	public void register(String name, String lastname, String coordinates, String username, String password, String id) {
 		if (!profiles.exists(username)) {
 			Profile profile = new Profile(username, hashing.generateStrongPasswordHash(password), name, lastname,
 					new Coordinates(coordinates));
-			System.out.println(name + " " + lastname + " " + coordinates + " " + username + " " + password);
 			profiles.add(profile);
 			profileID.put(id, profile);
 			fgs.answerRegister(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), username);
@@ -71,7 +67,7 @@ public class FaceGramServerApplication {
 	}
 
 	public void addFriend(String username, String id) {
-		if (profileID.containsKey(id) && profiles.exists(username) && !profileID.get(id).getFriendlist().contains(profiles.get(username))) {
+		if (profileID.containsKey(id) && profiles.exists(username) && !profileID.get(id).getFriendlist().contains(profiles.get(username)) && !profileID.get(id).getUsername().equals(username)) {
 			profiles.addFriend(profileID.get(id).getUsername(), username);
 			fgs.answerAddFriend(true, profiles.get(username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
@@ -110,22 +106,21 @@ public class FaceGramServerApplication {
 
 	public void message(String username, String message, String id) {
 		// TODO Auto-generated method stub
-		if (true) {
-
-			fgs.answerMessage(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+		if (profileID.containsKey(id) && profiles.exists(username)) {
+			chats.addMessage(profileID.get(id).getUsername(), username, message);
+			fgs.answerMessage(true, username, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerMessage(false, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+			fgs.answerMessage(false, username, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 
 	}
 
-	public void chat(String name, String id) {
-		// TODO Auto-generated method stub
-		if (true) {
-
-			fgs.answerChat(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+	public void chat(String username, String id) {
+		if (profileID.containsKey(id) && profiles.exists(username)) {
+			
+			fgs.answerChat(true, chats.getChat(profileID.get(id).getUsername(), username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerChat(false, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+			fgs.answerChat(false, null, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 
 	}

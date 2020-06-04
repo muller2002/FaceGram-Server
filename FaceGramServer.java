@@ -17,11 +17,12 @@ public class FaceGramServer extends Server {
 	@Override
 	public void processMessage(String ip, int port, String pMessage) {
 		System.out.println(pMessage);
-		int splitterPostition = pMessage.indexOf(":");
 		try {
-		String firstPart = splitterPostition >0?pMessage.substring(0,splitterPostition):pMessage;
-		String rest = splitterPostition >0?pMessage.substring(splitterPostition+1, pMessage.length()):"";
-		
+			int splitterPostition = pMessage.indexOf(":");
+			
+			String firstPart = splitterPostition >0?pMessage.substring(0,splitterPostition):pMessage;
+			String rest = splitterPostition >0?pMessage.substring(splitterPostition+1, pMessage.length()):"";
+			
 			switch (firstPart) {
 				case "Login":
 					login(rest, ip + ":" + port);
@@ -62,6 +63,8 @@ public class FaceGramServer extends Server {
 			send(ip, port, "Error on: " + pMessage + " " + e.getLocalizedMessage());
 		}catch (StringIndexOutOfBoundsException e) {
 			send(ip, port, "Error on: " + pMessage + " " + e.getLocalizedMessage());
+			e.printStackTrace();
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -151,8 +154,13 @@ public class FaceGramServer extends Server {
 	}
 
 	public void answerData(boolean b, Profile profile, double distance, String ip, int port) {
-		if(b)this.send(ip, port, "Ok:Data:" + profile.getUsername() + ":" + profile.getName() + ":" + profile.getLastname() + ":" + profile.getCoordinates().getLatitude() + "," + profile.getCoordinates().getLongitude() + ":" + distance ); //TODO: List to String(Username)
+		if(b)this.send(ip, port, "Ok:Data:" + profile.getUsername() + ":" + profile.getName() + ":" + profile.getLastname() + ":" + profile.getCoordinates().getLatitude() + "," + profile.getCoordinates().getLongitude() + ":" + round(distance, 3) ); //TODO: List to String(Username)
 		else this.send(ip, port, "Failed:Data" + (profile != null? ":" + profile.getUsername():""));
+	}
+
+	private long round(double distance, int i) {
+		int m = (int) Math.pow(10, i);
+		return Math.round(distance*m)/m;
 	}
 
 	public void answerKnows(boolean b, String knowsList, String ip, int port) {
@@ -160,13 +168,19 @@ public class FaceGramServer extends Server {
 		else this.send(ip, port, "Failed:Knows:" + knowsList);
 	}
 
-	  void answerMessage(boolean b, String ip, int port, Profile profile) {
-		// TODO Auto-generated method stub
+	  void answerMessage(boolean b, String receipent, String ip, int port) {
+		  if(b)this.send(ip, port, "Ok:Msg:" + receipent); 
+		  else this.send(ip, port, "Failed:Msg:" + receipent); 
 		
 	}
 
-	public void answerChat(boolean b, String ip, int port, Profile profile) {
-		// TODO Auto-generated method stub
+	public void answerChat(boolean b, List<ChatMessage> messages, String string, int i) {
+		messages.toFirst();
+		while(messages.hasAccess()) {
+			System.out.println(messages.getContent().getAuthor() + " wrote: " + messages.getContent().getMsg());
+			messages.next();
+		}
+		System.out.println();
 		
 	}
 
