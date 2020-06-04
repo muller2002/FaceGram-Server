@@ -1,22 +1,26 @@
 
 import java.util.HashMap;
 
+
 public class FaceGramServerApplication {
 	HashMap<String, Profile> profileID = new HashMap<String, Profile>();
-	HashMap<String, Profile> profiles = new HashMap<String, Profile>();
+	ProfileModel profiles;
 	Hashing hashing = new Hashing();
 	FaceGramServer fgs;
 	private int port;
 
+
 	public FaceGramServerApplication(int port, String userdata) {
 		this.port = port;
+		profiles = new ProfileModel(userdata);
 		fgs = new FaceGramServer(port, this);
 		System.out.println("test2");
 	}
+	
 
 	public void login(String username, String password, String id) {
 		System.out.println(username + " " + password);
-		if (profiles.containsKey(username) && profiles.get(username).testPassword(password)) {
+		if (profiles.exists(username) && profiles.get(username).testPassword(password)) {
 			profileID.put(id, profiles.get(username));
 			System.out.println(username + " " + password);
 			fgs.answerLogin(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), username);
@@ -29,11 +33,11 @@ public class FaceGramServerApplication {
 	public void register(String name, String lastname, String coordinates, String username, String password,
 			String id) {
 		System.out.println("Register : " + username);
-		if (!profiles.containsKey(username)) {
-			Profile profile = new Profile(username, hashing.generateStorngPasswordHash(password), name, lastname,
-					coordinates);
+		if (!profiles.exists(username)) {
+			Profile profile = new Profile(username, hashing.generateStrongPasswordHash(password), name, lastname,
+					new Coordinates(coordinates));
 			System.out.println(name + " " + lastname + " " + coordinates + " " + username + " " + password);
-			profiles.put(username, profile);
+			profiles.add(profile);
 			profileID.put(id, profile);
 			fgs.answerRegister(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), username);
 		} else {
@@ -48,11 +52,16 @@ public class FaceGramServerApplication {
 	}
 
 	public void removeID(String id) {
+		if(profileID.containsKey(id)) {
+			fgs.answerLogout(true, profileID.get(id).getUsername(), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+		}else {
+			fgs.answerLogout(false, "", id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+		}
 		profileID.remove(id);
 
 	}
 
-	public void friendList(String id) {
+	public void friendList(String id) {  
 		if (profileID.containsKey(id)) {
 			fgs.answerFriendList(true, profileID.get(id).getFriendlist(), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
@@ -61,43 +70,40 @@ public class FaceGramServerApplication {
 
 	}
 
-	public void addFriend(String name, String id) {
-		if (profileID.containsKey(id) && profiles.containsKey(name) && !profileID.get(id).getFriendlist().contains(profiles.get(name))) {
-			profiles.get(profileID.get(id).getUsername()).addFriend(profiles.get(name));//Adding friend to Logged in User
-			profiles.get(name).addFriend(profiles.get(profileID.get(id).getUsername()));//Adding loged in user to friend
-			fgs.answerAddFriend(true, profiles.get(name), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+	public void addFriend(String username, String id) {
+		if (profileID.containsKey(id) && profiles.exists(username) && !profileID.get(id).getFriendlist().contains(profiles.get(username))) {
+			profiles.addFriend(profileID.get(id).getUsername(), username);
+			fgs.answerAddFriend(true, profiles.get(username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerAddFriend(false, profiles.get(name), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+			fgs.answerAddFriend(false, profiles.get(username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 
 	}
 
-	public void deleteFriend(String name, String id) {
-		if (profileID.containsKey(id) && profiles.containsKey(name) && profileID.get(id).getFriendlist().contains(profiles.get(name))) {
-			profiles.get(profileID.get(id).getUsername()).deleteFriend(profiles.get(name));//Adding friend to Logged in User
-			profiles.get(name).deleteFriend(profiles.get(profileID.get(id).getUsername()));//Adding loged in user to friend
-			fgs.answerDeleteFriend(true, profiles.get(name), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+	public void deleteFriend(String username, String id) {
+		if (profileID.containsKey(id) && profiles.exists(username) && profileID.get(id).getFriendlist().contains(profiles.get(username))) {
+			profiles.deleteFriend(profileID.get(id).getUsername(), username);
+			fgs.answerDeleteFriend(true, profiles.get(username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerDeleteFriend(false, profiles.get(name), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+			fgs.answerDeleteFriend(false, profiles.get(username), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 	}
 
 	public void data(String username, String id) {
-		if (true) {
+		if (profileID.containsKey(id) && profiles.exists(username)) {
 
-			fgs.answerData(true, null, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+			fgs.answerData(true, profiles.get(username), profiles.get(username).getCoordinates().getDistance(profileID.get(id).getCoordinates()), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerData(false, null, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
+			fgs.answerData(false, null, 0, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 	}
 
 	public void knows(String username, String id) {
-		// TODO Auto-generated method stub
-		if (true) {
-
-			fgs.answerKnows(true, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+		if (profileID.containsKey(id) && profiles.exists(username)) {
+			
+			fgs.answerKnows(true, profiles.knows(profileID.get(id), profiles.get(username)), id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		} else {
-			fgs.answerKnows(false, id.split(":")[0], Integer.parseInt(id.split(":")[1]), profileID.get(id));
+			fgs.answerKnows(false, username, id.split(":")[0], Integer.parseInt(id.split(":")[1]));
 		}
 
 	}
@@ -123,5 +129,8 @@ public class FaceGramServerApplication {
 		}
 
 	}
+
+
+
 
 }

@@ -2,26 +2,25 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 public class Hashing {
-	public String generateStorngPasswordHash(String password) {
+	public String generateStrongPasswordHash(String password) {
 
 		byte[] salt;
 		try {
 			salt = getSalt();
-			return generateStorngPasswordHash(password, salt);
+			return generateStrongPasswordHash(password, salt);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			return null;
 		}
 
 	}
-	public String generateStorngPasswordHash(String password, String salt) {
+	public String generateStrongPasswordHash(String password, String salt) {
 		byte[] byteSalt = new BigInteger(salt,16).toByteArray();
-		return generateStorngPasswordHash(password, rmv(byteSalt));
+		return generateStrongPasswordHash(password, rmv(byteSalt));
 	}
 	private byte[] rmv(byte[] bArr) {
 		if(bArr[0] == 0) {
@@ -34,7 +33,7 @@ public class Hashing {
 			return bArr;
 		}
 	}
-	public String generateStorngPasswordHash(String password, byte[] salt) {
+	public String generateStrongPasswordHash(String password, byte[] salt) {
 		int iterations = 1000;
 		char[] chars = password.toCharArray();
 

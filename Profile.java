@@ -4,10 +4,10 @@ public class Profile {
 	private String hashedPass;
 	private String name;
 	private String lastname;
-	private String coordinates;
+	private Coordinates coordinates;
 	private List<Profile> friendlist;
 	
-	public Profile(String username, String hashedPass, String name, String lastname, String coordinates) {
+	public Profile(String username, String hashedPass, String name, String lastname, Coordinates coordinates) {
 		friendlist = new List<Profile>();
 		this.setHashedPass(hashedPass);
 		this.setUsername(username);
@@ -18,7 +18,7 @@ public class Profile {
 	
 	public boolean testPassword(String password) {
 		Hashing hashing = new Hashing();
-		String toTestHash = hashing.generateStorngPasswordHash(password, hashedPass.split(":")[1]);
+		String toTestHash = hashing.generateStrongPasswordHash(password, hashedPass.split(":")[1]);
 		return toTestHash.equals(hashedPass);
 	}
 	
@@ -83,11 +83,13 @@ public class Profile {
 		this.lastname = lastname;
 	}
 
-	public String getCoordinates() {
+	public Coordinates getCoordinates() {
 		return coordinates;
 	}
+	
 
-	public void setCoordinates(String coordinates) {
+
+	public void setCoordinates(Coordinates coordinates) {
 		this.coordinates = coordinates;
 	}
 

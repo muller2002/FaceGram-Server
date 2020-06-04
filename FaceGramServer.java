@@ -16,7 +16,7 @@ public class FaceGramServer extends Server {
 
 	@Override
 	public void processMessage(String ip, int port, String pMessage) {
-
+		System.out.println(pMessage);
 		int splitterPostition = pMessage.indexOf(":");
 		try {
 		String firstPart = splitterPostition >0?pMessage.substring(0,splitterPostition):pMessage;
@@ -135,7 +135,7 @@ public class FaceGramServer extends Server {
 	}
 
 	public void answerFriendList(boolean b, List<Profile> friendList, String ip, int port) {
-		this.send(ip, port, (b?"Ok:FriendList:" + toCSVbyUsername(friendList):"Failed:FriendList")); //TODO: List to String(Username)
+		this.send(ip, port, (b?"Ok:Friendlist:" + toCSVbyUsername(friendList):"Failed:FriendList")); //TODO: List to String(Username)
 		
 	}
 
@@ -147,17 +147,17 @@ public class FaceGramServer extends Server {
 			friendList.next();
 		}
 		if(returnString.length() > 0)return returnString.substring(0,returnString.length()-1);
-		return returnString;
+		return " ";
 	}
 
-	public void answerData(boolean b, Profile profile, String ip, int port) {
-		this.send(ip, port, (b?"Ok:Data:" + profile.getUsername() + ":" + profile.getName() + ":" + profile.getLastname() + ":" + profile.getCoordinates() :"Failed:Data") ); //TODO: List to String(Username)
-		
+	public void answerData(boolean b, Profile profile, double distance, String ip, int port) {
+		if(b)this.send(ip, port, "Ok:Data:" + profile.getUsername() + ":" + profile.getName() + ":" + profile.getLastname() + ":" + profile.getCoordinates().getLatitude() + "," + profile.getCoordinates().getLongitude() + ":" + distance ); //TODO: List to String(Username)
+		else this.send(ip, port, "Failed:Data" + (profile != null? ":" + profile.getUsername():""));
 	}
 
-	public void answerKnows(boolean b, String ip, int port, Profile profile) {
-		// TODO Auto-generated method stub
-		
+	public void answerKnows(boolean b, String knowsList, String ip, int port) {
+		if(b)this.send(ip, port, "Ok:Knows:" + knowsList); 
+		else this.send(ip, port, "Failed:Knows:" + knowsList);
 	}
 
 	  void answerMessage(boolean b, String ip, int port, Profile profile) {
@@ -179,5 +179,10 @@ public class FaceGramServer extends Server {
 	public void answerDeleteFriend(boolean b, Profile profile, String ip, int port) {
 		if(profile != null) this.send(ip, port, (b?"Ok":"Failed") + ":DelFriend:" + profile.getUsername());
 		else this.send(ip, port, "Failed:DelFriend");
+	}
+
+	public void answerLogout(boolean b, String username, String ip, int port) {
+		if(b)this.send(ip, port, "Ok:Logout:" + username); 
+		else this.send(ip, port, "Failed:Logout");
 	}
 }
