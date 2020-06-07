@@ -4,17 +4,33 @@ public class Profile {
 	private String hashedPass;
 	private String name;
 	private String lastname;
+	private String status;
 	private Coordinates coordinates;
 	private List<Profile> friendlist;
 	
-	public Profile(String username, String hashedPass, String name, String lastname, Coordinates coordinates) {
+	/**
+	 * 
+	 * @param username
+	 * @param hashedPass the hashed Password. hashing with class Hashing.java
+	 * @param name
+	 * @param lastname
+	 * @param coordinates
+	 * @param status
+	 */
+	public Profile(String username, String hashedPass, String name, String lastname, Coordinates coordinates, String status) {
 		friendlist = new List<Profile>();
-		this.setHashedPass(hashedPass);
+		this.hashedPass = hashedPass;
 		this.setUsername(username);
 		this.setName(name);
 		this.setLastname(lastname);
 		this.setCoordinates(coordinates);
+		
 	}
+	/**
+	 * Method to test if the Password is correct
+	 * @param password in Plaintext
+	 * @return true if Password is correct
+	 */
 	
 	public boolean testPassword(String password) {
 		Hashing hashing = new Hashing();
@@ -59,14 +75,6 @@ public class Profile {
 		this.username = username;
 	}
 
-	public String getHashedPass() {
-		return hashedPass;
-	}
-
-	public void setHashedPass(String hashedPass) {
-		this.hashedPass = hashedPass;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -86,8 +94,6 @@ public class Profile {
 	public Coordinates getCoordinates() {
 		return coordinates;
 	}
-	
-
 
 	public void setCoordinates(Coordinates coordinates) {
 		this.coordinates = coordinates;
@@ -95,5 +101,25 @@ public class Profile {
 
 	public List<Profile> getFriendlist() {
 		return friendlist;
+	}
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+	public boolean changePassword(String oldPassword, String newHashedPassword) {
+		if(testPassword(oldPassword)) {
+			hashedPass = newHashedPassword;
+			return true;
+		}else return false;
 	}
 }
