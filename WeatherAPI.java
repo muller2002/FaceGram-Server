@@ -9,6 +9,12 @@ public class WeatherAPI {
 	private String tempInCelsius, feelsLikeTempInCelsius, pressure, humidity, windSpeed, windDirection, cloudiness, main, description, weatherID, weatherIcon;
 	private long timeOfCreation;
 	
+	/**
+	 * Constructor of Class WeatherAPI. All data is from timeOfCreation
+	 * @param lat latitude of User
+	 * @param lon longtiude of User
+	 * @throws IOException
+	 */
 	public WeatherAPI(double lat, double lon) throws IOException{
 		apiUrl = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey + "&lang=" + "de" + "&units=metric";
 
@@ -105,18 +111,26 @@ public class WeatherAPI {
 		return description;
 	}
 	
+	/**
+	 * Returns WeatherID within the group in German (Identifier for Weathercondition
+	 * @return WeatherID
+	 */
 	public String getWeatherID() {
 		return weatherID;
 	}
 
 	/**
+	 * Returns WeatherIcon (Used for bilding the Link to the Symbol of weather)
 	 * @return the weatherIcon
 	 */
 	public String getWeatherIcon() {
 		return weatherIcon;
 	}
 
-
+	/**
+	 * Returns timeOfCreation (Used for updating when outofdate)
+	 * @return long in Unixtime from moment of creation
+	 */
 	public long timeOfCreation() {
 		return timeOfCreation ;
 	}

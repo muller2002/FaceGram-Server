@@ -6,9 +6,8 @@ public class Main {
 		int port = 50000 + 5;
 
 		FaceGramServerApplication fgsa = new FaceGramServerApplication(port , "");
-		fgsa.register("Ö", "Account", "0,0", "T1", "P", "IP:1");
 		
-		for(int i = 1; i < 100; i++) {
+		for(int i = 1; i < 10; i++) {
 			fgsa.register("TestNr" + i, "Account", (int)i/90 + "," + i%90, "T" + i, "P", "IP:" + i);
 		}
 		

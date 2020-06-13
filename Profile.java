@@ -24,6 +24,7 @@ public class Profile {
 		this.setName(name);
 		this.setLastname(lastname);
 		this.setCoordinates(coordinates);
+		this.setStatus(status);
 		
 	}
 	/**
@@ -38,6 +39,11 @@ public class Profile {
 		return toTestHash.equals(hashedPass);
 	}
 	
+	/**
+	 * Method to add a Friend to the friendlist. Will only add Friends who wasnt add yet
+	 * @param profil
+	 * @return true if succesful
+	 */
 	public boolean addFriend(Profile profil) {
 		if(profil != null) {
 			friendlist.toFirst();
@@ -52,6 +58,11 @@ public class Profile {
 		return false;
 	}
 	
+	/**
+	 * Method to remove a Friend from the friendlist
+	 * @param profil
+	 * @return true if succesful
+	 */
 	public boolean deleteFriend(Profile profil) {
 		if(profil != null) {
 			friendlist.toFirst();
@@ -67,38 +78,66 @@ public class Profile {
 		return false;
 	}
 
+
+	/**
+	 * @return the username
+	 */
 	public String getUsername() {
 		return username;
 	}
-
+	/**
+	 * @param username the username to set
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
-
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * @return the lastname
+	 */
 	public String getLastname() {
 		return lastname;
 	}
-
+	/**
+	 * @param lastname the lastname to set
+	 */
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-
+	/**
+	 * @return the coordinates
+	 */
 	public Coordinates getCoordinates() {
 		return coordinates;
 	}
-
+	/**
+	 * @param coordinates the coordinates to set
+	 */
 	public void setCoordinates(Coordinates coordinates) {
 		this.coordinates = coordinates;
 	}
-
+	/**
+	 * @return the hashedPass
+	 */
+	public String getHashedPass() {
+		return hashedPass;
+	}
+	
+	/**
+	 * Method to get the Friendlist type Profile
+	 * @return Friendlist<Profile>
+	 */
 	public List<Profile> getFriendlist() {
 		return friendlist;
 	}
@@ -115,7 +154,12 @@ public class Profile {
 		this.status = status;
 	}
 	
-	
+	/**
+	 * Method to Change the Password
+	 * @param oldPassword the OldPassword in Plaintext
+	 * @param newHashedPassword new Password in Hashed Variant
+	 * @return true if succesfull (oldPassword is right), else false
+	 */
 	public boolean changePassword(String oldPassword, String newHashedPassword) {
 		if(testPassword(oldPassword)) {
 			hashedPass = newHashedPassword;

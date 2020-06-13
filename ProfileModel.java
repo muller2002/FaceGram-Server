@@ -32,7 +32,6 @@ public class ProfileModel {
 	}
 	
 	public double getDistance(Profile p1, Profile p2) {
-		//return 6378.388 * Math.acos(Math.sin(p1.getCoordinates().getLatitude()) * Math.sin(p2.getCoordinates().getLatitude()) + Math.cos(p1.getCoordinates().getLatitude()) * Math.cos(p2.getCoordinates().getLatitude()) * Math.cos(p2.getCoordinates().getLongitude() - p1.getCoordinates().getLongitude()));
 		return p1.getCoordinates().getDistance(p2.getCoordinates());
 	}
 	

@@ -37,6 +37,12 @@ public class Coordinates {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+	
+	/**
+	 * returns the Distance between this Coordinate and the Cordinates handed over
+	 * @param coordinates
+	 * @return distance in km as double
+	 */
 	public double getDistance(Coordinates coordinates) {
 	 	int radius = 6371;
 
