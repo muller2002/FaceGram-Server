@@ -286,7 +286,22 @@ public class FaceGramServerApplication {
 		}
 	}
 
+	/**
+	 * Method to get general data
+	 * @param id
+	 */
+	public void general(String id) {
+		fgs.answerGeneral(id.split(":")[0], Integer.parseInt(id.split(":")[1]), profiles.size(), profileID.size());
+		
+	}
 
 
-
+	/**
+	 * Method to get shortest Path for Distributing materials
+	 * @param id
+	 */
+	public String shortestDistributionPath(String id) {
+		return profiles.shortestDistance("T2");
+	
+	}
 }

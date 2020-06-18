@@ -6,6 +6,7 @@ public class NewsAPI {
 	JSONObject apiResponseJSON;
 	private long lastUpdate;
 	private boolean works;
+	private int num = 1;
 	public NewsAPI() {
 
 		
@@ -21,26 +22,33 @@ public class NewsAPI {
 				works = false;
 			}
 		}
+		
 	}
 	
 	public String getTitle() throws IOException {
 		update();
-		return apiResponseJSON.getJSONArray("news").getJSONObject(0).getString("title");
+		return (apiResponseJSON.getJSONArray("news").getJSONObject(num).getString("title")).replace(":", ";");
 	}
 	
 	public String getDescription() throws IOException {
 		update();
-		return apiResponseJSON.getJSONArray("news").getJSONObject(0).getJSONArray("content").getJSONObject(0).getString("value");
+		String s = (apiResponseJSON.getJSONArray("news").getJSONObject(num).getJSONArray("content").getJSONObject(0).getString("value")).replace(":", ";");
+		s = s.replace("\r", "");
+		return s.replace("\n", "");
 	}
 	
 	public String getLink() throws IOException {//sophoraId
 		update();
-		return "www.tagesschau.de/" + apiResponseJSON.getJSONArray("news").getJSONObject(0).getString("sophoraId") + ".html";
+		return ("www.tagesschau.de/" + apiResponseJSON.getJSONArray("news").getJSONObject(num).getString("sophoraId") + ".html").replace(":", ";");
 	}
 	
 	public String getPictureLink() throws IOException {
 		update();
-		return apiResponseJSON.getJSONArray("news").getJSONObject(0).getJSONObject("teaserImage").getJSONObject("videowebl").getString("imageurl").substring(8);
+		try {
+			return (apiResponseJSON.getJSONArray("news").getJSONObject(num).getJSONObject("teaserImage").getJSONObject("videowebl").getString("imageurl").substring(8)).replace(":", ";");
+		}catch(Exception e) {
+			return "www.tagesschau.de/resources/framework/img/tagesschau/banner/logo_base.png";
+		}
 	}
 	
 	public boolean isValid() {

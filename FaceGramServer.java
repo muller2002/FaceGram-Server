@@ -111,7 +111,11 @@ public class FaceGramServer extends Server {
 					if(rest.split(":").length == 2)changePassword(rest, ip + ":" + port);
 					else this.send(ip, port, "Failed:" + firstPart + ":" + rest);
 					break;
+				case "General":
+					general(ip + ":" + port);
+					break;
 				default:
+					send(ip, port, "3 Billion Devices Run Java");
 					send(ip, port, "Error Command not found: " + pMessage);
 					break;
 			}
@@ -123,6 +127,11 @@ public class FaceGramServer extends Server {
 
 	}
 	
+	private void general(String id) {
+		application.general(id);
+	}
+
+
 	/**
 	 * Adapter to Facegramserverapplication: Command owndata
 	 * @param id
@@ -330,7 +339,7 @@ public class FaceGramServer extends Server {
 	 */
 	public void answerFriendList(boolean b, List<Profile> friendList, String ip, int port) {
 		this.send(ip, port, (b?"Ok:Friendlist:" + toCSVbyUsername(friendList):"Failed:FriendList")); //TODO: List to String(Username)
-		System.out.println(toCSVbyUsername(friendList));
+
 		
 	}
 
@@ -520,6 +529,7 @@ public class FaceGramServer extends Server {
 		if(b && newsAPI != null)
 			try {
 				this.send(ip, port, "Ok:News:" + newsAPI.getTitle() + ":" + newsAPI.getDescription() + ":" + newsAPI.getPictureLink() + ":" + newsAPI.getLink());
+				System.out.println("Ok:News:" + newsAPI.getTitle() + ":" + newsAPI.getDescription() + ":" + newsAPI.getPictureLink() + ":" + newsAPI.getLink());
 			} catch (IOException e) {
 				this.send(ip, port, "Failed:News");
 			}
@@ -549,7 +559,13 @@ public class FaceGramServer extends Server {
 		else this.send(ip, port, "Failed:Changepass");
 	}
 
-
+	/**
+	 * Method that will answer ownData request
+	 * @param b
+	 * @param profile
+	 * @param ip
+	 * @param port
+	 */
 	public void answerOwnData(boolean b, Profile profile, String ip, int port) {
 		if(b)this.send(ip, port, "Ok:Owndata:" + 	profile.getUsername() + ":" + 
 													profile.getName() + ":" + 
@@ -557,5 +573,17 @@ public class FaceGramServer extends Server {
 													profile.getCoordinates().getLatitude() + "," + profile.getCoordinates().getLongitude() + ":" + 
 													profile.getStatus()); 
 		else this.send(ip, port, "Failed:Owndata");
+	}
+
+	/**
+	 * Method that will answer gereal request
+	 * @param ip
+	 * @param port
+	 * @param allUsers
+	 * @param onlineUsers
+	 */
+	public void answerGeneral(String ip, int port, int allUsers, int onlineUsers) {
+		this.send(ip, port, "Ok:General:" + allUsers + ":" + onlineUsers);
+		
 	}
 }

@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 import java.util.*;
 
@@ -40,6 +39,14 @@ public class ProfileModel {
 		friends.addVertex(new Vertex(profile.getUsername()));
 		profiles.put(profile.getUsername(), profile);
 	}
+	
+	/**
+	 * Method to return the Size of the network. number of users
+	 * @return number of users
+	 */
+	public int size() {
+		return profiles.size();
+	}
 
 	/**
 	 * Method adds a Friend
@@ -65,19 +72,14 @@ public class ProfileModel {
 	}
 
 	/**
-	 * Method returns the Distance between two Profiles
+	 * Method returns the Distance between two Profiles; -1 if unable to get distance
 	 * @param p1 Profile 1
 	 * @param p2 Profile 2
-	 * @return distance
+	 * @return the distance in km
 	 */
 	public double getDistance(Profile p1, Profile p2) {
-		// return 6378.388 * Math.acos(Math.sin(p1.getCoordinates().getLatitude()) *
-		// Math.sin(p2.getCoordinates().getLatitude()) +
-		// Math.cos(p1.getCoordinates().getLatitude()) *
-		// Math.cos(p2.getCoordinates().getLatitude()) *
-		// Math.cos(p2.getCoordinates().getLongitude() -
-		// p1.getCoordinates().getLongitude()));
-		return p1.getCoordinates().getDistance(p2.getCoordinates());
+		if(p1 != null && p2 != null)return p1.getCoordinates().getDistance(p2.getCoordinates());
+		else return -1;
 	}
 
 	/**
@@ -147,7 +149,7 @@ public class ProfileModel {
 	 * @param v Vertex to work with
 	 * @return Sting
 	 */
-	public String breadthFirstSearch(Vertex v) {
+	private String breadthFirstSearch(Vertex v) {
 		String result = "";
 		boolean neighbours = true;
 		List<Vertex> helpList = new List<Vertex>();
@@ -186,7 +188,7 @@ public class ProfileModel {
 	 * @param s String which contains all friends 
 	 * @return List<String> with a sorted order of all friends
 	 */
-	public List<String> createSortedList(String username, String s){
+	private List<String> createSortedList(String username, String s){
 		List<String> list = new List<String>();
 		String[] a = s.split(";");
 		for (int i = 0; i < a.length-1; i++) {
@@ -211,7 +213,7 @@ public class ProfileModel {
 	 * @param s List<String> which contains all friends 
 	 * @return List<String> with a sorted order of all friends
 	 */
-	public List<String> createSortedList(String username, List<String> s){
+	private List<String> createSortedList(String username, List<String> s){
 		List<String> list = new List<String>();
 		ArrayList<String> a = new ArrayList<String>();
 		list.toFirst();
