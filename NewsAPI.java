@@ -6,7 +6,7 @@ public class NewsAPI {
 	JSONObject apiResponseJSON;
 	private long lastUpdate;
 	private boolean works;
-	private int num = 1;
+	private int num = 0;
 	public NewsAPI() {
 
 		
